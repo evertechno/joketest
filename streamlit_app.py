@@ -5,6 +5,7 @@ from PIL import Image
 from io import BytesIO
 import pyttsx3
 import json
+import matplotlib.pyplot as plt
 
 # --- Functions to fetch data for different features ---
 def get_random_joke():
@@ -267,40 +268,29 @@ if theme == "Dark":
         </style>
     """, unsafe_allow_html=True)
 
-# --- Organizing content with multiple columns ---
-col1, col2, col3 = st.columns(3)
+# --- Tab Layout ---
+tab1, tab2, tab3 = st.tabs(["Fun Stuff", "Recommendations", "Visualizations"])
 
-with col1:
+with tab1:
     st.subheader("😂 Random Joke")
     if st.button('Generate a Random Joke'):
         joke = get_random_joke()
         st.write(joke)
     
-    st.subheader("🎬 Random Movie Recommendation")
-    if st.button('Generate Random Movie'):
-        movie = get_random_movie()
-        st.write(f"How about watching: {movie}")
+    st.subheader("🎭 Joke of the Day")
+    if st.button('Generate Joke of the Day'):
+        joke_of_the_day = get_random_joke_of_the_day()
+        st.write(joke_of_the_day)
     
-    st.subheader("🎶 Random Song Recommendation")
-    if st.button('Generate Random Song'):
-        song = get_random_song_recommendation()
-        st.write(f"How about listening to: {song}")
-    
-    st.subheader("🍕 Random Food Recommendation")
-    if st.button('Generate Random Food'):
-        food = get_random_food_recommendation()
-        st.write(f"How about eating: {food}")
-    
-    st.subheader("🐶 Random Dog Image")
-    if st.button('Generate Random Dog Image'):
-        dog_image = get_random_dog_image()
-        st.image(dog_image, caption="Cute Dog!")
-
-with col2:
     st.subheader("💬 Random Quote")
     if st.button('Generate a Random Quote'):
         quote = get_random_quote()
         st.write(quote)
+    
+    st.subheader("🌟 Quote of the Day")
+    if st.button('Generate Quote of the Day'):
+        quote_of_the_day = get_random_quote_of_the_day()
+        st.write(quote_of_the_day)
     
     st.subheader("🧠 Random Trivia Question")
     if st.button('Generate Random Trivia'):
@@ -309,26 +299,67 @@ with col2:
         st.write("Options: ", options)
         st.write(f"Correct Answer: {correct_answer}")
     
+    st.subheader("🔮 Random Riddle")
+    if st.button('Generate Random Riddle'):
+        riddle = get_random_riddle()
+        st.write(riddle)
+    
+    st.subheader("📜 Random Poem")
+    if st.button('Generate Random Poem'):
+        poem = get_random_poem()
+        st.write(poem)
+    
+    st.subheader("💡 Random Advice")
+    if st.button('Generate Random Advice'):
+        advice = get_random_advice()
+        st.write(advice)
+    
+    st.subheader("🧘 Random Yoga Pose")
+    if st.button('Generate Random Yoga Pose'):
+        pose = get_random_yoga_pose()
+        st.write(f"Try this yoga pose: {pose}")
+
+with tab2:
+    st.subheader("🎬 Random Movie Recommendation")
+    if st.button('Generate Random Movie'):
+        movie = get_random_movie()
+        st.write(f"How about watching: {movie}")
+    
+    st.subheader("📺 Random TV Show Recommendation")
+    if st.button('Generate Random TV Show'):
+        show = get_random_tv_show()
+        st.write(f"How about watching: {show}")
+    
+    st.subheader("🎶 Random Song Recommendation")
+    if st.button('Generate Random Song'):
+        song = get_random_song_recommendation()
+        st.write(f"How about listening to: {song}")
+    
     st.subheader("📚 Random Book Recommendation")
     if st.button('Generate Random Book'):
         book = get_random_book_recommendation()
         st.write(f"How about reading: {book}")
     
-    st.subheader("🌟 Quote of the Day")
-    if st.button('Generate Quote of the Day'):
-        quote_of_the_day = get_random_quote_of_the_day()
-        st.write(quote_of_the_day)
+    st.subheader("🍕 Random Food Recommendation")
+    if st.button('Generate Random Food'):
+        food = get_random_food_recommendation()
+        st.write(f"How about eating: {food}")
 
-    st.subheader("🎭 Joke of the Day")
-    if st.button('Generate Joke of the Day'):
-        joke_of_the_day = get_random_joke_of_the_day()
-        st.write(joke_of_the_day)
-
-with col3:
+with tab3:
     st.subheader("🐱 Random Cat Image")
     if st.button('Generate Random Cat Image'):
         img = get_random_cat_image()
         st.image(img, caption="Cute Cat!")
+    
+    st.subheader("🐶 Random Dog Image")
+    if st.button('Generate Random Dog Image'):
+        dog_image = get_random_dog_image()
+        st.image(dog_image, caption="Cute Dog!")
+    
+    st.subheader("🐶 Random Animal Image")
+    if st.button('Generate Random Animal Image'):
+        img = get_random_animal_image()
+        st.image(img, caption="Cute Animal!")
     
     st.subheader("⚡ Random Fact")
     if st.button('Generate Random Fact'):
@@ -340,30 +371,17 @@ with col3:
         weather = get_random_weather()
         st.write(weather)
     
-    st.subheader("🔮 Random Riddle")
-    if st.button('Generate Random Riddle'):
-        riddle = get_random_riddle()
-        st.write(riddle)
-
-    st.subheader("🐶 Random Animal Image")
-    if st.button('Generate Random Animal Image'):
-        img = get_random_animal_image()
-        st.image(img, caption="Cute Animal!")
-
-    st.subheader("📜 Random Poem")
-    if st.button('Generate Random Poem'):
-        poem = get_random_poem()
-        st.write(poem)
-
-    st.subheader("💡 Random Advice")
-    if st.button('Generate Random Advice'):
-        advice = get_random_advice()
-        st.write(advice)
-
-    st.subheader("🧘 Random Yoga Pose")
-    if st.button('Generate Random Yoga Pose'):
-        pose = get_random_yoga_pose()
-        st.write(f"Try this yoga pose: {pose}")
+    st.subheader("📈 Fun Visualizations")
+    chart_data = {
+        "Categories": ["Jokes", "Quotes", "Facts", "Weather", "Animals"],
+        "Counts": [random.randint(1, 50) for _ in range(5)]
+    }
+    fig, ax = plt.subplots()
+    ax.bar(chart_data["Categories"], chart_data["Counts"], color=['red', 'blue', 'green', 'purple', 'orange'])
+    ax.set_xlabel('Categories')
+    ax.set_ylabel('Counts')
+    ax.set_title('Random Category Counts')
+    st.pyplot(fig)
 
 # --- Footer ---
 st.markdown("Made with 💙 by ChatGPT. Enjoy the randomness!")
