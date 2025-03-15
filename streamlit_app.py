@@ -209,6 +209,43 @@ def get_random_joke_of_the_day():
     except requests.exceptions.RequestException as e:
         return f"Request failed: {e}"
 
+# --- Unique Features ---
+def get_random_poem():
+    url = 'https://www.poemist.com/api/v1/randompoems'
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            poem_data = response.json()[0]
+            title = poem_data['title']
+            content = poem_data['content']
+            return f"{title}\n\n{content}"
+        else:
+            return f"Failed to fetch poem, status code: {response.status_code}"
+    except requests.exceptions.RequestException as e:
+        return f"Request failed: {e}"
+
+def get_random_advice():
+    url = 'https://api.adviceslip.com/advice'
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            advice_data = response.json()
+            return advice_data['slip']['advice']
+        else:
+            return f"Failed to fetch advice, status code: {response.status_code}"
+    except requests.exceptions.RequestException as e:
+        return f"Request failed: {e}"
+
+def get_random_yoga_pose():
+    poses = [
+        "Mountain Pose (Tadasana)",
+        "Downward-Facing Dog (Adho Mukha Svanasana)",
+        "Warrior I (Virabhadrasana I)",
+        "Tree Pose (Vrksasana)",
+        "Child's Pose (Balasana)"
+    ]
+    return random.choice(poses)
+
 # --- Streamlit Layout ---
 st.title("Ultimate Fun Generator")
 st.markdown("Welcome to the **Ultimate Fun Generator**! Let's get your dose of randomness. Choose something fun below.")
@@ -312,6 +349,21 @@ with col3:
     if st.button('Generate Random Animal Image'):
         img = get_random_animal_image()
         st.image(img, caption="Cute Animal!")
+
+    st.subheader("📜 Random Poem")
+    if st.button('Generate Random Poem'):
+        poem = get_random_poem()
+        st.write(poem)
+
+    st.subheader("💡 Random Advice")
+    if st.button('Generate Random Advice'):
+        advice = get_random_advice()
+        st.write(advice)
+
+    st.subheader("🧘 Random Yoga Pose")
+    if st.button('Generate Random Yoga Pose'):
+        pose = get_random_yoga_pose()
+        st.write(f"Try this yoga pose: {pose}")
 
 # --- Footer ---
 st.markdown("Made with 💙 by ChatGPT. Enjoy the randomness!")
