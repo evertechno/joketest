@@ -185,6 +185,30 @@ def get_random_riddle():
     ]
     return random.choice(riddles)
 
+def get_random_dog_image():
+    url = 'https://dog.ceo/api/breeds/image/random'
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            dog_data = response.json()
+            return dog_data['message']
+        else:
+            return f"Failed to fetch dog image, status code: {response.status_code}"
+    except requests.exceptions.RequestException as e:
+        return f"Request failed: {e}"
+
+def get_random_joke_of_the_day():
+    url = 'https://official-joke-api.appspot.com/jokes/random'
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            joke_data = response.json()
+            return joke_data['setup'] + " - " + joke_data['punchline']
+        else:
+            return f"Failed to fetch joke of the day, status code: {response.status_code}"
+    except requests.exceptions.RequestException as e:
+        return f"Request failed: {e}"
+
 # --- Streamlit Layout ---
 st.title("Ultimate Fun Generator")
 st.markdown("Welcome to the **Ultimate Fun Generator**! Let's get your dose of randomness. Choose something fun below.")
@@ -230,6 +254,11 @@ with col1:
         food = get_random_food_recommendation()
         st.write(f"How about eating: {food}")
     
+    st.subheader("🐶 Random Dog Image")
+    if st.button('Generate Random Dog Image'):
+        dog_image = get_random_dog_image()
+        st.image(dog_image, caption="Cute Dog!")
+
 with col2:
     st.subheader("💬 Random Quote")
     if st.button('Generate a Random Quote'):
@@ -252,6 +281,11 @@ with col2:
     if st.button('Generate Quote of the Day'):
         quote_of_the_day = get_random_quote_of_the_day()
         st.write(quote_of_the_day)
+
+    st.subheader("🎭 Joke of the Day")
+    if st.button('Generate Joke of the Day'):
+        joke_of_the_day = get_random_joke_of_the_day()
+        st.write(joke_of_the_day)
 
 with col3:
     st.subheader("🐱 Random Cat Image")
