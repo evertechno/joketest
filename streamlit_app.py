@@ -3,13 +3,14 @@ import random
 import requests
 from PIL import Image
 from io import BytesIO
+import pyttsx3
 import json
 
 # --- Functions to fetch data for different features ---
 def get_random_joke():
     url = 'https://v2.jokeapi.dev/joke/Any?type=single'
     try:
-        response = requests.get(url, verify=False)  # Disable SSL verification (temporary fix)
+        response = requests.get(url, verify=True)
         if response.status_code == 200:
             joke_data = response.json()
             if joke_data['type'] == 'single':
@@ -22,18 +23,16 @@ def get_random_joke():
         return f"Request failed: {e}"
 
 def get_random_quote():
-    url = 'https://api.quotable.io/random'
+    url = 'https://quotes.rest/qod'
     try:
         response = requests.get(url)
         if response.status_code == 200:
             quote_data = response.json()
-            return f"\"{quote_data['content']}\"\n\n- {quote_data['author']}"
+            return quote_data['contents']['quotes'][0]['quote']
         else:
             return f"Failed to fetch quote, status code: {response.status_code}"
     except requests.exceptions.RequestException as e:
         return f"Request failed: {e}"
-    except json.JSONDecodeError:
-        return "Failed to decode JSON response for quote"
 
 def get_random_fact():
     url = 'https://uselessfacts.jsph.pl/random.json?language=en'
@@ -46,8 +45,6 @@ def get_random_fact():
             return f"Failed to fetch fact, status code: {response.status_code}"
     except requests.exceptions.RequestException as e:
         return f"Request failed: {e}"
-    except json.JSONDecodeError:
-        return "Failed to decode JSON response for fact"
 
 def get_random_meme():
     url = 'https://api.imgflip.com/get_memes'
@@ -61,8 +58,6 @@ def get_random_meme():
             return f"Failed to fetch meme, status code: {response.status_code}"
     except requests.exceptions.RequestException as e:
         return f"Request failed: {e}"
-    except json.JSONDecodeError:
-        return "Failed to decode JSON response for meme"
 
 def get_random_quote_of_the_day():
     url = 'https://quotes.rest/qod'
@@ -75,10 +70,6 @@ def get_random_quote_of_the_day():
             return f"Failed to fetch quote of the day, status code: {response.status_code}"
     except requests.exceptions.RequestException as e:
         return f"Request failed: {e}"
-    except KeyError:
-        return "Failed to find the expected keys in the response for the quote of the day"
-    except json.JSONDecodeError:
-        return "Failed to decode JSON response for quote of the day"
 
 def get_random_movie():
     movies = [
@@ -151,6 +142,49 @@ def get_random_cat_image():
     except requests.exceptions.RequestException as e:
         return f"Request failed: {e}"
 
+def play_text_to_speech(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
+
+def get_random_song_recommendation():
+    songs = [
+        "Blinding Lights - The Weeknd",
+        "Shape of You - Ed Sheeran",
+        "Levitating - Dua Lipa",
+        "Save Your Tears - The Weeknd",
+        "Uptown Funk - Mark Ronson"
+    ]
+    return random.choice(songs)
+
+def get_random_book_recommendation():
+    books = [
+        "To Kill a Mockingbird by Harper Lee",
+        "1984 by George Orwell",
+        "The Great Gatsby by F. Scott Fitzgerald",
+        "Moby Dick by Herman Melville",
+        "Pride and Prejudice by Jane Austen"
+    ]
+    return random.choice(books)
+
+def get_random_food_recommendation():
+    foods = [
+        "Pizza",
+        "Burger",
+        "Sushi",
+        "Pasta",
+        "Salad"
+    ]
+    return random.choice(foods)
+
+def get_random_riddle():
+    riddles = [
+        "What has keys but can't open locks? A piano.",
+        "What can travel around the world while staying in the corner? A stamp.",
+        "What is always in front of you but can't be seen? The future."
+    ]
+    return random.choice(riddles)
+
 # --- Streamlit Layout ---
 st.title("Ultimate Fun Generator")
 st.markdown("Welcome to the **Ultimate Fun Generator**! Let's get your dose of randomness. Choose something fun below.")
@@ -172,70 +206,78 @@ if theme == "Dark":
         </style>
     """, unsafe_allow_html=True)
 
-# --- Use columns to organize content ---
+# --- Organizing content with multiple columns ---
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    # Random Joke Button
     st.subheader("😂 Random Joke")
     if st.button('Generate a Random Joke'):
         joke = get_random_joke()
         st.write(joke)
-
-    # Random Meme Button
-    st.subheader("😆 Random Meme")
-    if st.button('Generate Random Meme'):
-        meme_url = get_random_meme()
-        if meme_url.startswith('http'):
-            st.image(meme_url, caption="Random Meme")
-        else:
-            st.error(meme_url)
-
-    # Random Movie Button
+    
     st.subheader("🎬 Random Movie Recommendation")
     if st.button('Generate Random Movie'):
         movie = get_random_movie()
         st.write(f"How about watching: {movie}")
-
+    
+    st.subheader("🎶 Random Song Recommendation")
+    if st.button('Generate Random Song'):
+        song = get_random_song_recommendation()
+        st.write(f"How about listening to: {song}")
+    
+    st.subheader("🍕 Random Food Recommendation")
+    if st.button('Generate Random Food'):
+        food = get_random_food_recommendation()
+        st.write(f"How about eating: {food}")
+    
 with col2:
-    # Random Quote Button
     st.subheader("💬 Random Quote")
     if st.button('Generate a Random Quote'):
         quote = get_random_quote()
         st.write(quote)
-
-    # Random Fun Fact Button
-    st.subheader("🎉 Random Fun Fact")
-    if st.button('Generate Random Fact'):
-        fact = get_random_fact()
-        st.write(fact)
-
-    # Random Trivia Button
+    
     st.subheader("🧠 Random Trivia Question")
     if st.button('Generate Random Trivia'):
         question, options, correct_answer = get_random_trivia()
         st.write(question)
         st.write("Options: ", options)
         st.write(f"Correct Answer: {correct_answer}")
-
-with col3:
-    # Random Weather Button
-    st.subheader("☀️ Random Weather")
-    if st.button('Generate Random Weather'):
-        weather = get_random_weather()
-        st.write(weather)
-
-    # Random Cat Image Button
-    st.subheader("🐱 Random Cat Picture")
-    if st.button('Generate Random Cat Image'):
-        img = get_random_cat_image()
-        st.image(img, caption="Cute Cat!")
-
-    # Quote of the Day Button
+    
+    st.subheader("📚 Random Book Recommendation")
+    if st.button('Generate Random Book'):
+        book = get_random_book_recommendation()
+        st.write(f"How about reading: {book}")
+    
     st.subheader("🌟 Quote of the Day")
     if st.button('Generate Quote of the Day'):
         quote_of_the_day = get_random_quote_of_the_day()
         st.write(quote_of_the_day)
+
+with col3:
+    st.subheader("🐱 Random Cat Image")
+    if st.button('Generate Random Cat Image'):
+        img = get_random_cat_image()
+        st.image(img, caption="Cute Cat!")
+    
+    st.subheader("⚡ Random Fact")
+    if st.button('Generate Random Fact'):
+        fact = get_random_fact()
+        st.write(fact)
+    
+    st.subheader("🌍 Random Weather")
+    if st.button('Generate Random Weather'):
+        weather = get_random_weather()
+        st.write(weather)
+    
+    st.subheader("🔮 Random Riddle")
+    if st.button('Generate Random Riddle'):
+        riddle = get_random_riddle()
+        st.write(riddle)
+
+    st.subheader("🐶 Random Animal Image")
+    if st.button('Generate Random Animal Image'):
+        img = get_random_animal_image()
+        st.image(img, caption="Cute Animal!")
 
 # --- Footer ---
 st.markdown("Made with 💙 by ChatGPT. Enjoy the randomness!")
