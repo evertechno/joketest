@@ -2,3 +2,4 @@ streamlit
  requests 
 pyttsx3 
 Pillow
+matplotlib
