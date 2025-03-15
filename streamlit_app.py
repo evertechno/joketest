@@ -7,7 +7,6 @@ from io import BytesIO
 import json
 
 # --- Functions to fetch data for different features ---
-
 def get_random_joke():
     url = 'https://v2.jokeapi.dev/joke/Any?type=single'
     try:
@@ -154,84 +153,89 @@ def get_random_cat_image():
 
 # --- Streamlit Layout ---
 st.title("Ultimate Fun Generator")
-st.markdown("Welcome to the **Ultimate Fun Generator**! Let's get your dose of randomness.")
+st.markdown("Welcome to the **Ultimate Fun Generator**! Let's get your dose of randomness. Choose something fun below.")
 
-# --- Random Joke ---
-st.subheader("😂 Random Joke")
-if st.button('Generate a Random Joke'):
-    joke = get_random_joke()
-    st.write(joke)
+# --- Dark Mode Toggle ---
+st.sidebar.title("Settings")
+theme = st.sidebar.radio("Choose a theme:", ("Light", "Dark"))
+if theme == "Dark":
+    st.markdown("""
+        <style>
+        body {
+            background-color: #2e2e2e;
+            color: white;
+        }
+        .stButton>button {
+            background-color: #6c757d;
+            color: white;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
-# --- Random Quote ---
-st.subheader("💬 Random Quote")
-if st.button('Generate a Random Quote'):
-    quote = get_random_quote()
-    st.write(quote)
+# --- Use columns to organize content ---
+col1, col2, col3 = st.columns(3)
 
-# --- Random Fun Fact ---
-st.subheader("🎉 Random Fun Fact")
-if st.button('Generate Random Fact'):
-    fact = get_random_fact()
-    st.write(fact)
+with col1:
+    # Random Joke Button
+    st.subheader("😂 Random Joke")
+    if st.button('Generate a Random Joke'):
+        joke = get_random_joke()
+        st.write(joke)
 
-# --- Random Meme ---
-st.subheader("😆 Random Meme")
-if st.button('Generate Random Meme'):
-    meme_url = get_random_meme()
-    if meme_url.startswith('http'):
-        st.image(meme_url, caption="Random Meme")
-    else:
-        st.error(meme_url)
+    # Random Meme Button
+    st.subheader("😆 Random Meme")
+    if st.button('Generate Random Meme'):
+        meme_url = get_random_meme()
+        if meme_url.startswith('http'):
+            st.image(meme_url, caption="Random Meme")
+        else:
+            st.error(meme_url)
 
-# --- Random Movie Recommendation ---
-st.subheader("🎬 Random Movie Recommendation")
-if st.button('Generate Random Movie'):
-    movie = get_random_movie()
-    st.write(f"How about watching: {movie}")
+    # Random Movie Button
+    st.subheader("🎬 Random Movie Recommendation")
+    if st.button('Generate Random Movie'):
+        movie = get_random_movie()
+        st.write(f"How about watching: {movie}")
 
-# --- Random TV Show Recommendation ---
-st.subheader("📺 Random TV Show Recommendation")
-if st.button('Generate Random TV Show'):
-    show = get_random_tv_show()
-    st.write(f"How about watching: {show}")
+with col2:
+    # Random Quote Button
+    st.subheader("💬 Random Quote")
+    if st.button('Generate a Random Quote'):
+        quote = get_random_quote()
+        st.write(quote)
 
-# --- Random Knock Knock Joke ---
-st.subheader("🔔 Knock-Knock Joke")
-if st.button('Generate Knock Knock Joke'):
-    knock_joke = get_knock_knock_joke()
-    st.write(knock_joke)
+    # Random Fun Fact Button
+    st.subheader("🎉 Random Fun Fact")
+    if st.button('Generate Random Fact'):
+        fact = get_random_fact()
+        st.write(fact)
 
-# --- Random Trivia Question ---
-st.subheader("🧠 Random Trivia Question")
-if st.button('Generate Random Trivia'):
-    question, options, correct_answer = get_random_trivia()
-    st.write(question)
-    st.write("Options: ", options)
-    st.write(f"Correct Answer: {correct_answer}")
+    # Random Trivia Button
+    st.subheader("🧠 Random Trivia Question")
+    if st.button('Generate Random Trivia'):
+        question, options, correct_answer = get_random_trivia()
+        st.write(question)
+        st.write("Options: ", options)
+        st.write(f"Correct Answer: {correct_answer}")
 
-# --- Random Animal Image ---
-st.subheader("🐶 Random Animal Picture")
-if st.button('Generate Random Animal Image'):
-    img = get_random_animal_image()
-    st.image(img, caption="Cute Animal!")
+with col3:
+    # Random Weather Button
+    st.subheader("☀️ Random Weather")
+    if st.button('Generate Random Weather'):
+        weather = get_random_weather()
+        st.write(weather)
 
-# --- Random Cat Image ---
-st.subheader("🐱 Random Cat Picture")
-if st.button('Generate Random Cat Image'):
-    img = get_random_cat_image()
-    st.image(img, caption="Cute Cat!")
+    # Random Cat Image Button
+    st.subheader("🐱 Random Cat Picture")
+    if st.button('Generate Random Cat Image'):
+        img = get_random_cat_image()
+        st.image(img, caption="Cute Cat!")
 
-# --- Random Weather ---
-st.subheader("☀️ Random Weather")
-if st.button('Generate Random Weather'):
-    weather = get_random_weather()
-    st.write(weather)
-
-# --- Quote of the Day ---
-st.subheader("🌟 Quote of the Day")
-if st.button('Generate Quote of the Day'):
-    quote_of_the_day = get_random_quote_of_the_day()
-    st.write(quote_of_the_day)
+    # Quote of the Day Button
+    st.subheader("🌟 Quote of the Day")
+    if st.button('Generate Quote of the Day'):
+        quote_of_the_day = get_random_quote_of_the_day()
+        st.write(quote_of_the_day)
 
 # --- Footer ---
 st.markdown("Made with 💙 by ChatGPT. Enjoy the randomness!")
