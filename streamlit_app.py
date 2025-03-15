@@ -2,7 +2,6 @@ import streamlit as st
 import random
 import requests
 from PIL import Image
-import pyttsx3
 from io import BytesIO
 import json
 
@@ -51,12 +50,13 @@ def get_random_fact():
         return "Failed to decode JSON response for fact"
 
 def get_random_meme():
-    url = 'https://meme-api.herokuapp.com/gimme'
+    url = 'https://api.imgflip.com/get_memes'
     try:
         response = requests.get(url)
         if response.status_code == 200:
             meme_data = response.json()
-            return meme_data.get('url', 'No meme available')
+            random_meme = random.choice(meme_data['data']['memes'])
+            return random_meme['url']
         else:
             return f"Failed to fetch meme, status code: {response.status_code}"
     except requests.exceptions.RequestException as e:
